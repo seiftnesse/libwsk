@@ -289,7 +289,11 @@ static NTSTATUS WSKCompletionRoutine(
             }
             __except (EXCEPTION_EXECUTE_HANDLER)
             {
+#ifdef __clang__
+                __asm__ volatile ("nop");
+#else
                 __nop();
+#endif
             }
         }
 
@@ -652,7 +656,7 @@ static NTSTATUS WSKAPI WSKControlSocketUnsafeDownlevel(
                 }
 
                 auto RemoteAddress = static_cast<PSOCKADDR>(InputBuffer);
-                if (RemoteAddress == nullptr || InputSize < sizeof SOCKADDR)
+                if (RemoteAddress == nullptr || InputSize < sizeof(SOCKADDR))
                 {
                     Status = STATUS_INVALID_PARAMETER;
                     break;
@@ -865,14 +869,14 @@ NTSTATUS WSKAPI WSKBindUnsafe(
         return Status;
     }
 
-    if (Socket == nullptr || LocalAddress == nullptr || (LocalAddressLength < sizeof SOCKADDR))
+    if (Socket == nullptr || LocalAddress == nullptr || (LocalAddressLength < sizeof(SOCKADDR)))
     {
         Status = STATUS_INVALID_PARAMETER;
         return Status;
     }
 
-    if ((LocalAddress->sa_family == AF_INET  && LocalAddressLength < sizeof SOCKADDR_IN) ||
-        (LocalAddress->sa_family == AF_INET6 && LocalAddressLength < sizeof SOCKADDR_IN6))
+    if ((LocalAddress->sa_family == AF_INET  && LocalAddressLength < sizeof(SOCKADDR_IN)) ||
+        (LocalAddress->sa_family == AF_INET6 && LocalAddressLength < sizeof(SOCKADDR_IN6)))
     {
         Status = STATUS_INVALID_PARAMETER;
         return Status;
@@ -922,8 +926,8 @@ NTSTATUS WSKAPI WSKAcceptUnsafe(
             break;
         }
 
-        if ((LocalAddress  && (LocalAddressLength  < sizeof SOCKADDR)) ||
-            (RemoteAddress && (RemoteAddressLength < sizeof SOCKADDR)))
+        if ((LocalAddress  && (LocalAddressLength  < sizeof(SOCKADDR))) ||
+            (RemoteAddress && (RemoteAddressLength < sizeof(SOCKADDR))))
         {
             Status = STATUS_INVALID_PARAMETER;
             break;
@@ -1124,14 +1128,14 @@ NTSTATUS WSKAPI WSKConnectUnsafe(
             break;
         }
 
-        if (Socket == nullptr || RemoteAddress == nullptr || (RemoteAddressLength < sizeof SOCKADDR))
+        if (Socket == nullptr || RemoteAddress == nullptr || (RemoteAddressLength < sizeof(SOCKADDR)))
         {
             Status = STATUS_INVALID_PARAMETER;
             break;
         }
 
-        if ((RemoteAddress->sa_family == AF_INET  && RemoteAddressLength < sizeof SOCKADDR_IN) ||
-            (RemoteAddress->sa_family == AF_INET6 && RemoteAddressLength < sizeof SOCKADDR_IN6))
+        if ((RemoteAddress->sa_family == AF_INET  && RemoteAddressLength < sizeof(SOCKADDR_IN)) ||
+            (RemoteAddress->sa_family == AF_INET6 && RemoteAddressLength < sizeof(SOCKADDR_IN6)))
         {
             Status = STATUS_INVALID_PARAMETER;
             break;
@@ -1465,14 +1469,14 @@ NTSTATUS WSKAPI WSKSendToUnsafe(
 
         if (RemoteAddress)
         {
-            if (RemoteAddressLength < sizeof SOCKADDR)
+            if (RemoteAddressLength < sizeof(SOCKADDR))
             {
                 Status = STATUS_INVALID_PARAMETER;
                 break;
             }
 
-            if ((RemoteAddress->sa_family == AF_INET  && RemoteAddressLength < sizeof SOCKADDR_IN) ||
-                (RemoteAddress->sa_family == AF_INET6 && RemoteAddressLength < sizeof SOCKADDR_IN6))
+            if ((RemoteAddress->sa_family == AF_INET  && RemoteAddressLength < sizeof(SOCKADDR_IN)) ||
+                (RemoteAddress->sa_family == AF_INET6 && RemoteAddressLength < sizeof(SOCKADDR_IN6)))
             {
                 Status = STATUS_INVALID_PARAMETER;
                 break;
@@ -1689,7 +1693,7 @@ NTSTATUS WSKAPI WSKReceiveFromUnsafe(
 
         if (RemoteAddress)
         {
-            if (RemoteAddressLength < sizeof SOCKADDR)
+            if (RemoteAddressLength < sizeof(SOCKADDR))
             {
                 Status = STATUS_INVALID_PARAMETER;
                 break;
@@ -2114,7 +2118,7 @@ NTSTATUS WSKAPI WSKAddressToString(
     {
         auto Address = reinterpret_cast<SOCKADDR_INET*>(SockAddress);
 
-        if (Address == nullptr || AddressLength < sizeof ADDRESS_FAMILY)
+        if (Address == nullptr || AddressLength < sizeof(ADDRESS_FAMILY))
         {
             break;
         }
@@ -2162,7 +2166,7 @@ NTSTATUS WSKAPI WSKStringToAddress(
     {
         auto Address = reinterpret_cast<SOCKADDR_INET*>(SockAddress);
 
-        if (Address == nullptr || AddressLength == nullptr || *AddressLength < sizeof ADDRESS_FAMILY)
+        if (Address == nullptr || AddressLength == nullptr || *AddressLength < sizeof(ADDRESS_FAMILY))
         {
             break;
         }
@@ -2498,7 +2502,7 @@ NTSTATUS WSKAPI WSKGetSocketOpt(
                 *static_cast<ULONG*>(OutputBuffer) = SocketObject.RecvTimeout;
             }
 
-            *OutputSize = sizeof ULONG;
+            *OutputSize = sizeof(ULONG);
             break;
         }
 

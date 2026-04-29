@@ -194,7 +194,7 @@ static NTSTATUS WSKAPI convert_addrinfo_to_addrinfoex(
             break;
         }
 
-        Result = (addrinfoexW*)ExAllocatePoolZero(PagedPool, sizeof addrinfoexW, WSK_POOL_TAG);
+        Result = (addrinfoexW*)ExAllocatePoolZero(PagedPool, sizeof(addrinfoexW), WSK_POOL_TAG);
         if (Result == nullptr)
         {
             Status = STATUS_INSUFFICIENT_RESOURCES;
@@ -282,7 +282,7 @@ static NTSTATUS WSKAPI convert_addrinfoex_to_addrinfo(
             break;
         }
 
-        Result = (addrinfo*)ExAllocatePoolZero(PagedPool, sizeof addrinfo, WSK_POOL_TAG);
+        Result = (addrinfo*)ExAllocatePoolZero(PagedPool, sizeof(addrinfo), WSK_POOL_TAG);
         if (Result == nullptr)
         {
             Status = STATUS_INSUFFICIENT_RESOURCES;

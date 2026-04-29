@@ -59,7 +59,7 @@ VOID WSKAPI WSKSocketsAVLTableInitialize()
 #else
         POOL_NX_ALLOCATION,
 #endif
-        max(sizeof SOCKET_OBJECT + sizeof RTL_BALANCED_LINKS, 64), WSK_POOL_TAG, 0);
+        max(sizeof(SOCKET_OBJECT) + sizeof(RTL_BALANCED_LINKS), 64), WSK_POOL_TAG, 0);
 
     ExInitializeFastMutex(&WSKSocketsAVLTableMutex);
 
